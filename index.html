@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magyar Clippy</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --accent: #4b9bff;
+        --accent-2: #8cc8ff;
+        --text: #1d2b3a;
+        --muted: #5f7286;
+        --shadow: rgba(61, 93, 151, 0.18);
+        --clippy-body: #d9e9ff;
+        --clippy-body-dark: #bfd8ff;
+        --clippy-eye: #1d2b3a;
+        --clippy-shadow: rgba(0, 0, 0, 0.14);
+        --bubble: #ffffff;
+        --bubble-border: #dfe9f5;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(160deg, #eef4ff 0%, #f8fbff 100%);
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--text);
+      }
+
+      .scene {
+        position: relative;
+        width: min(92vw, 760px);
+        height: 620px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid rgba(150, 175, 214, 0.28);
+        box-shadow: 0 26px 60px rgba(53, 77, 120, 0.12);
+        overflow: hidden;
+      }
+
+      .header {
+        position: absolute;
+        top: 24px;
+        left: 28px;
+        right: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 4;
+      }
+
+      .title {
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: 0.02em;
+      }
+
+      .status {
+        background: rgba(75, 155, 255, 0.08);
+        border: 1px solid rgba(75, 155, 255, 0.22);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 9px 14px;
+        font-size: 0.76rem;
+        font-weight: 600;
+      }
+
+      .robot-zone {
+        position: absolute;
+        left: 50%;
+        bottom: 118px;
+        transform: translateX(-50%);
+        width: 320px;
+        height: 360px;
+        z-index: 2;
+      }
+
+      .shadow {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        width: 190px;
+        height: 28px;
+        transform: translateX(-50%);
+        background: rgba(86, 117, 154, 0.18);
+        border-radius: 50%;
+        filter: blur(10px);
+      }
+
+      .clippy {
+        position: absolute;
+        left: 50%;
+        bottom: 20px;
+        width: 220px;
+        height: 260px;
+        transform: translateX(-50%);
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateX(-50%) translateY(0px); }
+        50% { transform: translateX(-50%) translateY(-10px); }
+      }
+
+      .paperclip {
+        position: absolute;
+        left: 50%;
+        bottom: 50px;
+        transform: translateX(-50%);
+        width: 130px;
+        height: 170px;
+      }
+
+      .paperclip .wire {
+        position: absolute;
+        inset: 0;
+        border: 12px solid #b6bfd6;
+        border-radius: 60% 60% 50% 50%;
+        border-top: 16px solid #b6bfd6;
+        border-left: 18px solid #b6bfd6;
+        border-right: 18px solid #b6bfd6;
+        border-bottom: 12px solid #b6bfd6;
+        transform: rotate(-10deg);
+        box-shadow: inset 0 0 0 6px rgba(255,255,255,0.3);
+      }
+
+      .paperclip .hook {
+        position: absolute;
+        width: 64px;
+        height: 84px;
+        border: 12px solid #a9b4c9;
+        border-radius: 50% 50% 42% 42%;
+        left: 50%;
+        top: 18px;
+        transform: translateX(-50%);
+      }
+
+      .body {
+        position: absolute;
+        left: 50%;
+        bottom: 24px;
+        width: 180px;
+        height: 140px;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, var(--clippy-body) 0%, var(--clippy-body-dark) 100%);
+        border-radius: 42% 42% 32% 32% / 58% 58% 42% 42%;
+        box-shadow: inset -12px -12px 0 rgba(255,255,255,0.15);
+      }
+
+      .head {
+        position: absolute;
+        left: 50%;
+        top: 32px;
+        width: 148px;
+        height: 108px;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, #dff0ff 0%, #d8ebff 100%);
+        border-radius: 46% 46% 48% 48% / 50% 50% 52% 52%;
+        box-shadow: inset -10px -8px 0 rgba(255,255,255,0.28);
+      }
+
+      .eye {
+        position: absolute;
+        top: 54px;
+        width: 16px;
+        height: 20px;
+        background: var(--clippy-eye);
+        border-radius: 50%;
+      }
+
+      .eye.left { left: 52px; }
+      .eye.right { right: 52px; }
+
+      .mouth {
+        position: absolute;
+        left: 50%;
+        bottom: 22px;
+        width: 44px;
+        height: 18px;
+        transform: translateX(-50%);
+        border-bottom: 5px solid var(--clippy-eye);
+        border-radius: 0 0 40px 40px;
+      }
+
+      .arm {
+        position: absolute;
+        top: 116px;
+        width: 70px;
+        height: 24px;
+        background: linear-gradient(180deg, #d8ebff 0%, #cfe5ff 100%);
+        border-radius: 18px;
+      }
+
+      .arm.left {
+        left: 5px;
+        transform: rotate(22deg);
+      }
+
+      .arm.right {
+        right: 5px;
+        transform: rotate(-22deg);
+      }
+
+      .arm::after {
+        content: "";
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        right: -8px;
+        top: 0;
+        background: linear-gradient(180deg, #d8ebff 0%, #cfe5ff 100%);
+        border-radius: 50%;
+      }
+
+      .bubble {
+        position: absolute;
+        right: 52px;
+        top: 88px;
+        width: min(44vw, 290px);
+        background: var(--bubble);
+        border: 2px solid var(--bubble-border);
+        border-radius: 18px 18px 18px 4px;
+        box-shadow: 0 16px 28px var(--shadow);
+        padding: 18px 18px 16px 18px;
+        z-index: 5;
+      }
+
+      .bubble::after {
+        content: "";
+        position: absolute;
+        left: 18px;
+        bottom: -18px;
+        width: 22px;
+        height: 22px;
+        background: var(--bubble);
+        border-right: 2px solid var(--bubble-border);
+        border-bottom: 2px solid var(--bubble-border);
+        transform: rotate(45deg);
+      }
+
+      .bubble h2 {
+        margin: 0 0 10px;
+        font-size: 1.06rem;
+        color: var(--text);
+      }
+
+      .bubble p {
+        margin: 0;
+        line-height: 1.55;
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+
+      .controls {
+        position: absolute;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 4;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary {
+        background: linear-gradient(180deg, #82b9ff 0%, #4b9bff 100%);
+        color: white;
+        box-shadow: 0 12px 18px rgba(75, 155, 255, 0.25);
+      }
+
+      .secondary {
+        background: #edf4ff;
+        color: var(--text);
+        border: 1px solid #dfeafc;
+      }
+
+      @media (max-width: 620px) {
+        .scene {
+          height: 560px;
+        }
+
+        .bubble {
+          right: 18px;
+          top: 80px;
+          width: min(58vw, 250px);
+        }
+
+        .robot-zone {
+          transform: translateX(-50%) scale(0.9);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <div class="header">
+        <div class="title">Magyar Clippy</div>
+        <div class="status">Elérhető</div>
+      </div>
+
+      <div class="bubble" id="bubble">
+        <h2>Helló!</h2>
+        <p id="message">Segítek, ha szükséged van rá. Próbáljunk meg valami szépet és hasznosat készíteni együtt!</p>
+      </div>
+
+      <div class="robot-zone">
+        <div class="shadow"></div>
+        <div class="clippy" aria-label="Clippy asszisztens">
+          <div class="paperclip">
+            <div class="wire"></div>
+            <div class="hook"></div>
+          </div>
+          <div class="head">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="mouth"></div>
+          </div>
+          <div class="body"></div>
+          <div class="arm left"></div>
+          <div class="arm right"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="nextMessage">Következő üzenet</button>
+        <button class="secondary" id="toggleMood">Váltás</button>
+      </div>
+    </div>
+
+    <script>
+      const messages = [
+        'Segítek, ha szükséged van rá. Próbáljunk meg valami szépet és hasznosat készíteni együtt!',
+        'Nagyszerű ötletet választottál! Most alakítsuk át ezüstös, modern megjelenésűvé!',
+        'A kód jó alap, de egyszerűbb és szebb lesz, ha még egy kis finomhangolást teszünk rá.',
+        'Már majdnem kész! Kicsi szerencsés pontokkal még jobb lesz a megjelenés.',
+        'A projekt tökéletesre váró, és most közösen befejezzük a végső simításokat.'
+      ];
+
+      const moods = [
+        { title: 'Helló!', prefix: 'Segítek, ha szükséged van rá.' },
+        { title: 'Siker!', prefix: 'Nagyon jól haladsz!' },
+        { title: 'Tipp!', prefix: 'Nézzünk meg egy kis extra finomítást.' }
+      ];
+
+      let messageIndex = 0;
+      let moodIndex = 0;
+
+      const messageEl = document.getElementById('message');
+      const bubbleTitle = document.querySelector('.bubble h2');
+      const nextMessageBtn = document.getElementById('nextMessage');
+      const toggleMoodBtn = document.getElementById('toggleMood');
+
+      nextMessageBtn.addEventListener('click', () => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        messageEl.textContent = messages[messageIndex];
+      });
+
+      toggleMoodBtn.addEventListener('click', () => {
+        moodIndex = (moodIndex + 1) % moods.length;
+        bubbleTitle.textContent = moods[moodIndex].title;
+        messageEl.textContent = moods[moodIndex].prefix + ' Gyorsan befejezzük a következő lépést!';
+      });
+    </script>
+  </body>
+</html>
